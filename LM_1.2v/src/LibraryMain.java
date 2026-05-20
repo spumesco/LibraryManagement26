@@ -143,7 +143,6 @@ public class LibraryMain {
             return;
         }
         manager.addBook(title, author);
-
         // DB 저장
         manager.saveChanges();
     }
@@ -201,11 +200,8 @@ public class LibraryMain {
             case 3 -> {
                 manager.deleteBook(id);
                 System.out.println("[결과] 삭제되었습니다.");
-
-
             }
         }
-
         // DB 저장
         manager.saveChanges();
     }
@@ -218,13 +214,11 @@ public class LibraryMain {
         System.out.print("- 대출할 도서 ID 입력: ");
         int id = sc.nextInt();
         sc.nextLine();
-
         if (manager.borrowBook(id)) {
             System.out.println("[결과] 대출이 완료되었습니다.");
         } else {
             System.out.println("[오류] 대출할 수 없는 도서이거나 이미 대출 중입니다.");
         }
-
         // DB 저장
         manager.saveChanges();
     }
@@ -237,13 +231,11 @@ public class LibraryMain {
         System.out.print("- 반납할 도서 ID 입력: ");
         int id = sc.nextInt();
         sc.nextLine();
-
         if (manager.returnBook(id)) {
             System.out.println("[결과] 반납이 완료되었습니다.");
         } else {
             System.out.println("[오류] 반납할 수 없는 도서입니다.");
         }
-
         // DB 저장
         manager.saveChanges();
     }
