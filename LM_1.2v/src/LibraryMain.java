@@ -3,33 +3,28 @@ import java.util.*;
 /**
  * 도서 관리 시스템의 메인 클래스
  * <p>사용자 인터페이스(CLI)를 제공하며, DB 연결하여 권한에 따른 메뉴 출력 및 사용자 입력을 처리합니다.</p>
- *
- * @author Su Man Nam
+ * @date 2026.05.18
+ * @author 조현지
  * @version 1.2
  */
+
 public class LibraryMain {
     private static LibraryManager manager;
     private static Scanner sc = new Scanner(System.in);
-
     public static void main(String[] args) {
         LibraryRepository repo = new LibraryRepository();
         manager = new LibraryManager(repo);
         manager.initialize();
-
         if (!performLogin())
             return;
-
         User user = manager.getCurrentUser();
         System.out.println("로그인 성공! 권한: " + user.getRole());
-
         while (true) {
             if (user.isAdmin()) showAdminMenu();
             else showUserMenu();
-
             System.out.print("  명령 입력: ");
             int choice = sc.nextInt();
             sc.nextLine();
-
             if (choice == 0) {
                 handleExit();
                 break;
@@ -52,7 +47,6 @@ public class LibraryMain {
             String id = sc.nextLine();
             System.out.print("비밀번호: ");
             String pw = sc.nextLine();
-
             if (manager.login(id, pw)) return true;
             System.out.println("[오류] 아이디 또는 비밀번호가 틀렸습니다.");
         }
@@ -137,13 +131,11 @@ public class LibraryMain {
         String title = sc.nextLine().trim();
         System.out.print("- 저자 입력: ");
         String author = sc.nextLine().trim();
-
         if (title.isEmpty() || author.isEmpty()) {
             System.out.println("[오류] 제목과 저자명은 공백일 수 없습니다.");
             return;
         }
         manager.addBook(title, author);
-
         // DB 저장
         manager.saveChanges();
     }
@@ -151,6 +143,8 @@ public class LibraryMain {
     /**
      * 도서 정보의 수정 및 삭제를 처리하는 UI입니다.
      * <p>ID를 통해 도서를 조회하고, 선택에 따라 제목/저자 수정 또는 삭제를 수행합니다.</p>
+     * <p>수정과 삭제의 효율화를 위해 같은 기능으로 개발(2025.05.20 조현지)</p>
+     * @see <a href="https://github.com/spumesco/LibraryManagement26/issues/1">Issue #1: 도서 삭제 DB 반영 오류</a>
      *
      * @see LibraryManager#deleteBook(int)
      */
@@ -164,7 +158,6 @@ public class LibraryMain {
         }
         int id = sc.nextInt();
         sc.nextLine();
-
         // Manager를 통해 도서 존재 확인
         Book book = manager.getBookMap().get(id);
         if (book == null) {
@@ -180,7 +173,6 @@ public class LibraryMain {
         System.out.print("  선택: ");
         int choice = sc.nextInt();
         sc.nextLine();
-
         switch (choice) {
             case 1 -> {
                 System.out.print("- 새 제목 입력: ");
@@ -201,11 +193,8 @@ public class LibraryMain {
             case 3 -> {
                 manager.deleteBook(id);
                 System.out.println("[결과] 삭제되었습니다.");
-
-
             }
         }
-
         // DB 저장
         manager.saveChanges();
     }
@@ -218,13 +207,11 @@ public class LibraryMain {
         System.out.print("- 대출할 도서 ID 입력: ");
         int id = sc.nextInt();
         sc.nextLine();
-
         if (manager.borrowBook(id)) {
             System.out.println("[결과] 대출이 완료되었습니다.");
         } else {
             System.out.println("[오류] 대출할 수 없는 도서이거나 이미 대출 중입니다.");
         }
-
         // DB 저장
         manager.saveChanges();
     }
@@ -237,13 +224,11 @@ public class LibraryMain {
         System.out.print("- 반납할 도서 ID 입력: ");
         int id = sc.nextInt();
         sc.nextLine();
-
         if (manager.returnBook(id)) {
             System.out.println("[결과] 반납이 완료되었습니다.");
         } else {
             System.out.println("[오류] 반납할 수 없는 도서입니다.");
         }
-
         // DB 저장
         manager.saveChanges();
     }
@@ -258,7 +243,6 @@ public class LibraryMain {
         System.out.println(" [도서 목록]");
         System.out.printf(" %-5s | %-12s | %-10s | %-10s \n", "ID", "제목", "저자", "상태");
         System.out.println("-----------------------------------------------------------");
-
         Collection<Book> books = manager.getAllBooks();
         if (books.isEmpty()) {
             System.out.println("  등록된 도서가 없습니다.");
@@ -281,7 +265,6 @@ public class LibraryMain {
         System.out.print("- 검색할 제목 키워드 입력: ");
         String keyword = sc.nextLine().trim();
         List<Book> results = manager.searchBook(keyword);
-
         System.out.printf(" 검색 결과 (%d건)\n", results.size());
         for (Book b : results) {
             System.out.printf(" %-5d | %-12s | %-10s | %-10s \n",
@@ -323,7 +306,6 @@ public class LibraryMain {
         System.out.println("\n[서버 네트워크 진단]");
         System.out.print("- 접속을 확인 할 IP 주소를 입력하세요: ");
         String ip = sc.nextLine(); // 여기서 사용자가 "127.0.0.1 && dir" 등을 입력함
-
         // Manager에게 명령어 실행을 맡김
         manager.checkServerStatus(ip);
     }

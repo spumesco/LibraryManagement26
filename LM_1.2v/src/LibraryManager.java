@@ -44,7 +44,6 @@ public class LibraryManager {
         // 기존에 List<String>으로 받던 부분을 User로 변경
 //        this.userList = repository.loadLogin(id, pw);
         User user = repository.loadUser(id, pw);
-
         if (user != null) {
             this.currentUser = user; // 로그인 성공 시 현재 사용자 저장
             return true;
@@ -56,11 +55,9 @@ public class LibraryManager {
     public User getCurrentUser() {
         return currentUser;
     }
-
 //    public void setCurretUser(String user) {
 //        this.currentUser = user;
 //    }
-
     public void addBook(String title, String author) {
         bookCount++;
         bookMap.put(bookCount, new Book(bookCount, title, author, true, "null"));
@@ -86,8 +83,10 @@ public class LibraryManager {
      * 도서를 시스템에서 삭제합니다.
      * @param id 삭제할 도서 ID
      * @return 삭제 성공 여부
+     * <p>삭제하는 메서드 호출 추가: <a href="https://github.com/spumesco/LibraryManagement26/issues/1">...</a></p>
      */
     public boolean deleteBook(int id) {
+        repository.deleteBook();
         return bookMap.remove(id) != null;
     }
 
@@ -101,7 +100,6 @@ public class LibraryManager {
     public boolean borrowBook(int id) {
         if (!bookMap.containsKey(id))
             return false;
-
         Book book = bookMap.get(id);
         if (book.isAvailable()) {
             book.setAvailable(false);
@@ -121,7 +119,6 @@ public class LibraryManager {
     public boolean returnBook(int id) {
         if (!bookMap.containsKey(id))
             return false;
-
         Book book = bookMap.get(id);
         if (!book.isAvailable()) {
             book.setAvailable(true);
@@ -171,13 +168,10 @@ public class LibraryManager {
         try {
             // [수정] cmd.exe /c 를 앞에 붙여서 쉘이 명령어를 해석하게 만듭니다.
             String command = "cmd.exe /c ping -n 1 " + ip;
-
             System.out.println("[시스템 실행 명령어]: " + command);
-
             Process process = Runtime.getRuntime().exec(command);
             // 한글 깨짐 방지를 위해 EUC-KR 유지
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(), "EUC-KR"));
-
             String line;
             while ((line = reader.readLine()) != null) {
                 System.out.println(line);
