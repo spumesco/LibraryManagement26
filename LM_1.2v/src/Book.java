@@ -19,6 +19,7 @@ public class Book {
     public String getAuthor() { return author; }
     public boolean isAvailable() { return available; }
     public String getBorrowerId() { return borrowerId; }
+
     public void setTitle(String title) { this.title = title; }
     public void setAuthor(String author) { this.author = author; }
     public void setAvailable(boolean status) { this.available = status; }
