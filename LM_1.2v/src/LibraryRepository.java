@@ -77,7 +77,7 @@ public class LibraryRepository {
      * @param bookId 삭제할 도서의 고유 ID
      * @return 삭제 성공 여부
      *
-     * @see <a href="https://github.com/sumannam/Java/issues/44">Issue #44: Admin 계정에서 책 데이터를 삭제</a>
+     * @see <a href="https://github.com/spumesco/LibraryManagement26/issues/2">Issue #2</a>
      */
     public boolean deleteBook(int bookId) {
         // 특정 ID만 삭제하도록 WHERE 절을 포함한 쿼리 작성
