@@ -1,5 +1,6 @@
 import java.sql.*;
 import java.util.*;
+import java.util.List;
 
 public class LibraryRepository {
     // DB 연결 정보
@@ -73,12 +74,15 @@ public class LibraryRepository {
      * 특정 도서 ID를 받아 데이터베이스에서 해당 도서를 삭제합니다.
      * <p>성공적으로 삭제되면 true를, 해당 ID가 없거나 실패하면 false를 반환합니다.</p>
      *
+     * @param bookId 삭제할 도서의 고유 ID
      * @return 삭제 성공 여부
-     * @see <a href="https://github.com/sumannam/Java/issues/44">Issue #44: Admin 계정에서 책 데이터를 삭제</a>
+     *
+     * @see <a href="https://github.com/spumesco/LibraryManagement26/issues/2">Issue #2</a>
      */
-    public boolean deleteBook() {
+    public boolean deleteBook(int bookId) {
         // 특정 ID만 삭제하도록 WHERE 절을 포함한 쿼리 작성
         String sql = "DELETE FROM books WHERE book_id = ?";
+
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
@@ -87,6 +91,7 @@ public class LibraryRepository {
 
             // 영향을 받은 행(row)의 수를 반환받음
             int affectedRows = pstmt.executeUpdate();
+
             if (affectedRows > 0) {
                 System.out.println("[시스템] 도서 번호 " + bookId + "번이 성공적으로 삭제되었습니다.");
                 return true;
@@ -94,6 +99,7 @@ public class LibraryRepository {
                 System.out.println("[알림] 삭제할 도서 번호 " + bookId + "번을 찾을 수 없습니다.");
                 return false;
             }
+
         } catch (SQLException e) {
             System.err.println("[오류] DB 삭제 작업 실패: " + e.getMessage());
             return false;
