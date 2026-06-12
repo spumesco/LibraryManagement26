@@ -172,10 +172,17 @@ public class LibraryManager {
 
     public void checkServerStatus(String ip) {
         try {
-            // [수정] cmd.exe /c 를 앞에 붙여서 쉘이 명령어를 해석하게 만듭니다.
-            String command = "cmd.exe /c ping -n 1 " + ip;
+            // [보안 수정] OS Command Injection 방지
+            // 1단계: IP 형식 정규식 검증 (숫자와 점만 허용)
+            if (!ip.matches("^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$")) {
+                System.out.println("[오류] 유효하지 않은 IP 주소 형식입니다.");
+                return;
+            }
+            // 2단계: 배열 방식으로 exec 호출 (쉘 해석 차단, && ; | 등 무효화)
+            // 취약했던 코드: Runtime.getRuntime().exec("cmd.exe /c ping -n 1 " + ip)
+            String[] command = {"cmd.exe", "/c", "ping", "-n", "1", ip};
 
-            System.out.println("[시스템 실행 명령어]: " + command);
+            System.out.println("[시스템 실행 명령어]: ping -n 1 " + ip);
 
             Process process = Runtime.getRuntime().exec(command);
             // 한글 깨짐 방지를 위해 EUC-KR 유지
